@@ -3,16 +3,16 @@ import numpy as np
 
 from log_transform import apply_log_transform
 from illumination import estimate_illumination
-from reflectance import recover_reflectance
 from normalization import normalize_image
 
 
 def process_rgb_image(image_path, kernel_size=61):
     """
-    Perform intrinsic reflectance recovery
-    independently on the R, G and B channels.
+    Recover intrinsic reflectance from an RGB image
+    using a shared illumination map.
     """
 
+    # Read image
     image = cv2.imread(image_path)
 
     if image is None:
@@ -20,28 +20,35 @@ def process_rgb_image(image_path, kernel_size=61):
 
     image = image.astype(np.float32) / 255.0
 
-    b_channel, g_channel, r_channel = cv2.split(image)
+    # ------------------------------------
+    # Estimate ONE illumination map
+    # ------------------------------------
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    log_gray = apply_log_transform(gray)
+
+    illumination = estimate_illumination(
+        log_gray,
+        kernel_size
+    )
 
     recovered_channels = []
 
-    for channel in [b_channel, g_channel, r_channel]:
+    # ------------------------------------
+    # Recover each RGB channel
+    # ------------------------------------
+    for channel in cv2.split(image):
 
-        log_image = apply_log_transform(channel)
+        log_channel = apply_log_transform(channel)
 
-        illumination = estimate_illumination(
-            log_image,
-            kernel_size
-        )
+        reflectance_log = log_channel - illumination
 
-        reflectance = recover_reflectance(
-            log_image,
-            illumination
-        )
+        reflectance = np.exp(reflectance_log)
 
         reflectance = normalize_image(reflectance)
 
         recovered_channels.append(reflectance)
 
-    output = cv2.merge(recovered_channels)
+    recovered_rgb = cv2.merge(recovered_channels)
 
-    return image, output
+    return image, recovered_rgb
