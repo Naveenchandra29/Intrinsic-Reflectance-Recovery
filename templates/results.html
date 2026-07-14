@@ -3,12 +3,12 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<title>Processing Results</title>
+    <title>Intrinsic Reflectance Recovery Results</title>
 
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -20,49 +20,87 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <h3>Processing Completed Successfully ✔</h3>
 
+<!-- ============================= -->
+<!-- Grayscale Results -->
+<!-- ============================= -->
+
+<h2 style="text-align:center;">Grayscale Processing</h2>
+
 <div class="grid">
 
 <div class="card">
 <h2>Original Image</h2>
 <img src="/{{ results.input }}">
+<br><br>
+<a class="button" href="/{{ results.input }}" download>Download</a>
 </div>
 
 <div class="card">
 <h2>Log Image</h2>
 <img src="/{{ results.log }}">
+<br><br>
+<a class="button" href="/{{ results.log }}" download>Download</a>
 </div>
 
 <div class="card">
 <h2>Estimated Illumination</h2>
 <img src="/{{ results.illumination }}">
+<br><br>
+<a class="button" href="/{{ results.illumination }}" download>Download</a>
 </div>
 
 <div class="card">
 <h2>Recovered Reflectance</h2>
 <img src="/{{ results.reflectance }}">
+<br><br>
+<a class="button" href="/{{ results.reflectance }}" download>Download</a>
 </div>
 
 </div>
 
 <br><br>
 
+<!-- ============================= -->
+<!-- RGB -->
+<!-- ============================= -->
+
 <h2 style="text-align:center;">RGB Processing</h2>
 
 <div class="grid">
 
 <div class="card">
+
 <h2>Original RGB</h2>
+
 <img src="/{{ rgb.original }}">
+
 </div>
 
 <div class="card">
+
 <h2>Recovered RGB Reflectance</h2>
+
 <img src="/{{ rgb.reflectance }}">
+
+<br><br>
+
+<a class="button"
+href="/{{ rgb.reflectance }}"
+download>
+
+Download
+
+</a>
+
 </div>
 
 </div>
 
 <br>
+
+<!-- ============================= -->
+<!-- Image Information -->
+<!-- ============================= -->
 
 <div class="card">
 
@@ -71,32 +109,42 @@ href="{{ url_for('static', filename='css/style.css') }}">
 <table>
 
 <tr>
-<td><b>Image Shape</b></td>
+<td>Image Width</td>
+<td>{{ results.image_width }}</td>
+</tr>
+
+<tr>
+<td>Image Height</td>
+<td>{{ results.image_height }}</td>
+</tr>
+
+<tr>
+<td>Image Shape</td>
 <td>{{ results.shape }}</td>
 </tr>
 
 <tr>
-<td><b>Data Type</b></td>
+<td>Data Type</td>
 <td>{{ results.dtype }}</td>
 </tr>
 
 <tr>
-<td><b>Input Minimum</b></td>
+<td>Input Minimum</td>
 <td>{{ results.input_min }}</td>
 </tr>
 
 <tr>
-<td><b>Input Maximum</b></td>
+<td>Input Maximum</td>
 <td>{{ results.input_max }}</td>
 </tr>
 
 <tr>
-<td><b>Log Minimum</b></td>
+<td>Log Minimum</td>
 <td>{{ results.log_min }}</td>
 </tr>
 
 <tr>
-<td><b>Log Maximum</b></td>
+<td>Log Maximum</td>
 <td>{{ results.log_max }}</td>
 </tr>
 
@@ -106,6 +154,10 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <br>
 
+<!-- ============================= -->
+<!-- Reflectance Statistics -->
+<!-- ============================= -->
+
 <div class="card">
 
 <h2>Reflectance Statistics</h2>
@@ -113,12 +165,12 @@ href="{{ url_for('static', filename='css/style.css') }}">
 <table>
 
 <tr>
-<td><b>Minimum Reflectance</b></td>
+<td>Minimum Reflectance</td>
 <td>{{ results.reflectance_min }}</td>
 </tr>
 
 <tr>
-<td><b>Maximum Reflectance</b></td>
+<td>Maximum Reflectance</td>
 <td>{{ results.reflectance_max }}</td>
 </tr>
 
@@ -128,6 +180,10 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <br>
 
+<!-- ============================= -->
+<!-- Processing Summary -->
+<!-- ============================= -->
+
 <div class="card">
 
 <h2>Processing Summary</h2>
@@ -135,32 +191,58 @@ href="{{ url_for('static', filename='css/style.css') }}">
 <table>
 
 <tr>
-<td><b>Kernel Size</b></td>
+
+<td>Kernel Size</td>
+
 <td>{{ results.kernel_size }}</td>
+
 </tr>
 
 <tr>
-<td><b>Pipeline Status</b></td>
+
+<td>Processing Time</td>
+
+<td>{{ processing_time }} sec</td>
+
+</tr>
+
+<tr>
+
+<td>Pipeline Status</td>
+
 <td>{{ results.status }}</td>
+
+</tr>
+
+<tr>
+
+<td>Processing Mode</td>
+
+<td>Grayscale + RGB</td>
+
 </tr>
 
 </table>
 
 </div>
 
-<br>
+<br><br>
 
 <div style="text-align:center;">
 
 <a class="button" href="/">
-⬅ Upload Another Image
+
+Upload Another Image
+
 </a>
 
 </div>
 
+<br>
+
 <div class="footer">
 
-Developed as part of the Intrinsic Reflectance Recovery Project
+Intrinsic Reflectance Recovery • IITM Assignment • Flask Implementation
 
 </div>
 

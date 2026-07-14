@@ -84,9 +84,9 @@ def process_image(image_path, kernel_size=61):
 
     return {
     "input": image_path.replace("\\", "/"),
-    "log": log_path,
-    "illumination": illumination_path,
-    "reflectance": reflectance_path,
+    "log": log_path.replace("\\", "/"),
+    "illumination": illumination_path.replace("\\", "/"),
+    "reflectance": reflectance_path.replace("\\", "/"),
 
     "shape": image.shape,
     "dtype": str(image.dtype),
@@ -99,6 +99,9 @@ def process_image(image_path, kernel_size=61):
 
     "reflectance_min": round(float(reflectance.min()), 4),
     "reflectance_max": round(float(reflectance.max()), 4),
+
+    "image_height": image.shape[0],
+    "image_width": image.shape[1],
 
     "kernel_size": kernel_size,
     "status": "Completed"

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import os
 import uuid
+import time
 
 from src.pipeline import process_image
 from src.rgb_pipeline import process_rgb_image
@@ -24,15 +25,14 @@ def process():
     if image.filename == "":
         return "Please select an image."
 
-    # -----------------------------
-    # Create upload folder
-    # -----------------------------
+    # -------------------------
+    # Kernel Size from UI
+    # -------------------------
+    kernel_size = int(request.form.get("kernel", 61))
+
     upload_folder = "static/uploads"
     os.makedirs(upload_folder, exist_ok=True)
 
-    # -----------------------------
-    # Create unique filename
-    # -----------------------------
     extension = os.path.splitext(image.filename)[1]
 
     filename = f"{uuid.uuid4().hex}{extension}"
@@ -41,20 +41,27 @@ def process():
 
     image.save(image_path)
 
-    # -----------------------------
-    # Run Grayscale Pipeline
-    # -----------------------------
-    results = process_image(image_path)
+    start = time.time()
 
-    # -----------------------------
-    # Run RGB Pipeline
-    # -----------------------------
-    rgb_results = process_rgb_image(image_path)
+    results = process_image(
+        image_path,
+        kernel_size
+    )
+
+    rgb = process_rgb_image(
+        image_path,
+        kernel_size
+    )
+
+    end = time.time()
+
+    processing_time = round(end - start, 3)
 
     return render_template(
         "results.html",
         results=results,
-        rgb=rgb_results
+        rgb=rgb,
+        processing_time=processing_time
     )
 
 
