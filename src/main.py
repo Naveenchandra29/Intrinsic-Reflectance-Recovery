@@ -5,6 +5,7 @@ import cv2
 from illumination import estimate_illumination
 from reflectance import recover_reflectance
 from normalization import normalize_image
+from rgb_pipeline import process_rgb_image
 
 # Load grayscale image
 image = load_image("../images/input/input.jpg")
@@ -44,6 +45,19 @@ cv2.imwrite(
     "../images/output/recovered_reflectance.png",
     (reflectance_normalized * 255).astype("uint8")
 )
+# -----------------------------
+# RGB Intrinsic Reflectance Recovery
+# -----------------------------
+
+original_rgb, recovered_rgb = process_rgb_image(
+    "../images/input/input.jpg",
+    kernel_size=61
+)
+
+cv2.imwrite(
+    "../images/output/rgb_reflectance.png",
+    (recovered_rgb * 255).astype("uint8")
+)
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
@@ -61,7 +75,20 @@ axes[1, 1].set_title("Recovered Reflectance")
 axes[1, 1].axis("off")
 plt.tight_layout()
 plt.show()
+plt.figure(figsize=(12,5))
 
+plt.subplot(1,2,1)
+plt.imshow(cv2.cvtColor((original_rgb*255).astype("uint8"), cv2.COLOR_BGR2RGB))
+plt.title("Original RGB")
+plt.axis("off")
+
+plt.subplot(1,2,2)
+plt.imshow(cv2.cvtColor((recovered_rgb*255).astype("uint8"), cv2.COLOR_BGR2RGB))
+plt.title("Recovered RGB Reflectance")
+plt.axis("off")
+
+plt.tight_layout()
+plt.show()
 # Display image information
 print("\n----------- Image Information -----------")
 print(f"Image Shape          : {image.shape}")
