@@ -1,9 +1,10 @@
+import os
 import cv2
 import numpy as np
 
-from log_transform import apply_log_transform
-from illumination import estimate_illumination
-from normalization import normalize_image
+from src.log_transform import apply_log_transform
+from src.illumination import estimate_illumination
+from src.normalization import normalize_image
 
 
 def process_rgb_image(image_path, kernel_size=61):
@@ -12,7 +13,6 @@ def process_rgb_image(image_path, kernel_size=61):
     using a shared illumination map.
     """
 
-    # Read image
     image = cv2.imread(image_path)
 
     if image is None:
@@ -21,7 +21,7 @@ def process_rgb_image(image_path, kernel_size=61):
     image = image.astype(np.float32) / 255.0
 
     # ------------------------------------
-    # Estimate ONE illumination map
+    # Estimate illumination from grayscale
     # ------------------------------------
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -51,4 +51,15 @@ def process_rgb_image(image_path, kernel_size=61):
 
     recovered_rgb = cv2.merge(recovered_channels)
 
-    return image, recovered_rgb
+    # Save RGB output
+    output_path = "static/results/rgb_reflectance.png"
+
+    cv2.imwrite(
+        output_path,
+        (recovered_rgb * 255).astype("uint8")
+    )
+
+    return {
+        "original": image_path.replace("\\", "/"),
+        "reflectance": output_path
+    }

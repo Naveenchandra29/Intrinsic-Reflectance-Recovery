@@ -1,5 +1,5 @@
-from integral_image import compute_integral_image
-from box_filter import manual_box_filter
+from src.integral_image import compute_integral_image
+from src.box_filter import manual_box_filter
 
 
 def estimate_illumination(log_image, kernel_size=61):
